@@ -27,7 +27,7 @@ public class BoardRepository {
 
     // 전체 목록 조회하기
     public List<Board> findAll(int page, int size) {
-        return em.createQuery("select b from b order by b.id desc", Board.class)
+        return em.createQuery("select b from Board b order by b.id desc", Board.class)
                 .setFirstResult(page * size) // 시작 위치
                 .setMaxResults(size) // 가져올 개수
                 .getResultList();

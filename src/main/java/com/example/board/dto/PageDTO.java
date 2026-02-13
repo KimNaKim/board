@@ -1,6 +1,8 @@
 package com.example.board.dto;
 
 import lombok.Getter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 //JpaRepository 없이 직접 EntityManager로 페이징하기 때문에 생성하는 DTO
@@ -34,5 +36,46 @@ public class PageDTO<T> {
         int blockSize = 5;
         this.startPage = (page / blockSize) * blockSize;
         this.endPage = Math.min(startPage + blockSize - 1, totalPages - 1);
+    }
+
+    // ─── Mustache용 헬퍼 메서드 ───
+    /** 이전 페이지 번호 */
+    public int getPrevPage() {
+        return page - 1;
+    }
+
+    /** 다음 페이지 번호 */
+    public int getNextPage() {
+        return page + 1;
+    }
+
+    /**
+     * 
+     * 
+     * 페이지 번호 목록 (Mustache에서 반복 출력용)
+     * 예: [{index: 0, number: 1, active: true}, {index: 1, number: 2, active:
+     * false}, ...]
+     */
+    public List<PageNumber> getPageNumbers() {
+        List<PageNumber> pages = new ArrayList<>();
+        for (int i = startPage; i <= endPage; i++) {
+            pages.add(new PageNumber(i, i + 1, i == page));
+        }
+        return pages;
+    }
+
+    @Getter
+    public static class PageNumber {
+        private int index;
+        // 0-based (URL 파라미터용)
+        private int number;
+        // 1-based (화면 표시용)
+        private boolean active; // 현재 페이지 여부
+
+        public PageNumber(int index, int number, boolean active) {
+            this.index = index;
+            this.number = number;
+            this.active = active;
+        }
     }
 }
